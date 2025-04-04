@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account</title>
+    <style>
+     body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        form {
+            max-width: 400px;
+            background-color: #ffffff;
+            padding: 20px;
+            padding-right: 40px;
+            margin: 0 auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-group input::placeholder {
+            color: #999;
+        }
+
+        .form-actions {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .btn-submit {
+            padding: 10px 20px;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-submit:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-reset {
+            padding: 10px 20px;
+            color: black;
+            background-color: #f4f4f4;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-reset:hover {
+            background-color: #ddd;
+        }
+
+        .api-response {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+        .api-response.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .api-response.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <form id="create-account-form" onsubmit="event.preventDefault(); handleCreateAccountSubmit(this);">
+        <h2>Create Account</h2>
+        <div class="form-group">
+            <label for="firstName">First Name</label>
+            <input type="text" id="firstName" name="firstName" placeholder="e.g., John" required>
+        </div>
+        <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input type="text" id="lastName" name="lastName" placeholder="e.g., Doe" required>
+        </div>
+        <div class="form-group">
+            <label for="userId">User ID</label>
+            <input type="text" id="userId" name="userId" placeholder="e.g., johndoe123" required>
+        </div>
+        <div class="form-group">
+            <label for="uniqueId">Unique ID</label>
+            <input type="text" id="uniqueId" name="uniqueId" placeholder="e.g., 56789" required>
+        </div>
+        <div class="form-group">
+            <label for="groupId">Group ID</label>
+            <input type="text" id="groupId" name="groupId" placeholder="e.g., 56789" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter Password" required>
+        </div>
+        <div class="form-group">
+            <label for="shell">Shell</label>
+            <select id="shell" name="shell" required>
+                <option value="">Select Shell</option>
+                <option value="/bin/bash">/bin/bash</option>
+                <option value="/bin/ksh">/bin/ksh</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="approvedBy">Approved By</label>
+            <input type="text" id="approvedBy" name="approvedBy" placeholder="e.g., Manager Name" required>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn-submit">Submit</button>
+            <button type="reset" class="btn-reset" onclick="handleResetCreate()">Reset</button>
+        </div>
+    </form>
+</body>
+
+<div id="apiResponse" class="api-response"></div>
+</html>

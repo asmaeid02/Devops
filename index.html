@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tools Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 1.5em;
+        }
+
+        .container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 200px;
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-right: 1px solid #ddd;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 10px;
+            margin: 5px 0;
+            color: #333;
+            text-decoration: none;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .sidebar a:hover {
+            background-color: #ddd;
+        }
+
+        .sidebar a.active {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+    </style>
+    <script>
+        function loadPage(pageUrl, headerText) {
+            document.querySelector('header').textContent = headerText;
+
+            // Fetch and load the HTML content dynamically
+            fetch(pageUrl)
+                .then(response => response.text())
+                .then(html => {
+                    document.querySelector('.content').innerHTML = html;
+                })
+                .catch(error => {
+                    console.error('Error loading page:', error);
+                    document.querySelector('.content').innerHTML = '<p>Error loading page content. Please try again.</p>';
+                });
+
+            // Update active link
+            document.querySelectorAll('.sidebar a').forEach(link => link.classList.remove('active'));
+            // document.querySelector(`[data-page="${pageUrl}"]`).classList.add('active');
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load the default page (Create Account) on initial load
+            loadPage('create_account', 'Create Account');
+        });
+
+        function handleRadioButtonChange(value) {
+            const userIdInput = document.getElementById('userId');
+            const resetPasswordButton = document.getElementById('resetPasswordButton');
+            const resetButton = document.getElementById('resetButton');
+
+            if (value === 'accept') {
+                userIdInput.disabled = false;
+            } else {
+                userIdInput.disabled = true;
+                resetPasswordButton.disabled = true;
+                resetButton.disabled = false;
+                userIdInput.value = '';
+            }
+        }
+
+        function handleUserIdInputChange(value) {
+            const resetPasswordButton = document.getElementById('resetPasswordButton');
+            resetPasswordButton.disabled = value.trim() === '';
+        }
+
+        function handleReset() {
+            document.getElementById('decline').checked = true;
+            handleRadioButtonChange('decline');
+            const apiResponse = document.getElementById('apiResponse');
+            apiResponse.textContent = '';
+            apiResponse.className = 'api-response';
+            apiResponse.style.display = 'none';
+        }
+
+        async function handleResetPassword() {
+            const userId = document.getElementById('userId').value;
+            const apiResponse = document.getElementById('apiResponse');
+
+            if (userId.trim() === '') {
+                alert('UserId cannot be empty!');
+                return;
+            }
+
+            try {
+                const response = await fetch('/reset-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ userId })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    apiResponse.textContent = result.message;
+                    apiResponse.className = 'api-response success';
+                } else {
+                    apiResponse.textContent = result.error || 'An error occurred';
+                    apiResponse.className = 'api-response error';
+                }
+            } catch (error) {
+                console.error('Error resetting password:', error);
+                apiResponse.textContent = 'An unexpected error occurred. Please try again later.';
+                apiResponse.className = 'api-response error';
+            }
+
+            apiResponse.style.display = 'block';
+        }
+
+        function handleResetRemove() {
+            const apiResponse = document.getElementById('apiResponse');
+            apiResponse.textContent = '';
+            apiResponse.className = 'api-response';
+            apiResponse.style.display = 'none';
+        }
+
+        async function handleRemoveAccountSubmit(form) {
+            const userid = form.userId.value;
+            const apiResponse = document.getElementById('apiResponse');
+
+            if (userid.trim() === '') {
+                alert('UserId cannot be empty!');
+                return;
+            }
+
+            try {
+                const response = await fetch('/remove_user', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ userid })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    apiResponse.textContent = result.message;
+                    apiResponse.className = 'api-response success';
+                } else {
+                    apiResponse.textContent = result.error || 'An error occurred';
+                    apiResponse.className = 'api-response error';
+                }
+            } catch (error) {
+                console.error('Error resetting password:', error);
+                apiResponse.textContent = 'An unexpected error occurred. Please try again later.';
+                apiResponse.className = 'api-response error';
+            }
+
+            apiResponse.style.display = 'block';
+        }
+        
+        function handleResetCreate() {
+            const apiResponse = document.getElementById('apiResponse');
+            apiResponse.textContent = '';
+            apiResponse.className = 'api-response';
+            apiResponse.style.display = 'none';
+        }
+
+        async function handleCreateAccountSubmit(form) {
+            const userid = form.userId.value;
+            const firstname = form.firstName.value; 
+            const lastname = form.lastName.value; 
+            const password = form.password.value; 
+            const uidNumber = form.uniqueId.value; 
+            const gidNumber = form.groupId.value; 
+            const loginshell = form.shell.value; 
+            const homeDirectory = "/home/" + userid;
+            
+            const apiResponse = document.getElementById('apiResponse');
+
+            if (userid.trim() === '') {
+                alert('UserId cannot be empty!');
+                return;
+            }
+
+            try {
+                const response = await fetch('/create_user', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ userid, firstname, lastname, password, uidNumber, gidNumber, loginshell, homeDirectory})
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    apiResponse.textContent = result.message;
+                    apiResponse.className = 'api-response success';
+                } else {
+                    apiResponse.textContent = result.error || 'An error occurred';
+                    apiResponse.className = 'api-response error';
+                }
+            } catch (error) {
+                console.error('Error resetting password:', error);
+                apiResponse.textContent = 'An unexpected error occurred. Please try again later.';
+                apiResponse.className = 'api-response error';
+            }
+
+            apiResponse.style.display = 'block';
+        }
+        
+    </script>
+</head>
+<body>
+    <header>Create Account</header>
+    <div class="container">
+        <div class="sidebar">
+            <a href="#" onclick="loadPage('create_account', 'Create Account')">Create Account</a>
+            <a href="#" onclick="loadPage('reset_password', 'Reset Password on Infrastructure')">Reset Password</a>
+            <!-- <a href="#" onclick="loadPage('lock_account', 'Lock Account')">Lock Account</a> -->
+            <a href="#" onclick="loadPage('remove_account', 'Remove Account')">Remove Account</a>
+        </div>
+        <div class="content">
+            <!-- Dynamic content will be loaded here -->
+        </div>
+    </div>
+</body>
+</html>
